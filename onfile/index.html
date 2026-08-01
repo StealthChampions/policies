@@ -322,10 +322,24 @@
         tracking, advertising, or data processing services.
       </p>
       <p>
-        The only external request the extension makes is loading site favicons
-        from <code>google.com/s2/favicons</code> to display website icons in the UI.
-        No user data is sent in these requests.
+        The extension makes only two kinds of external request, both to Google
+        and neither carrying analytics or tracking data:
       </p>
+      <ul>
+        <li>
+          <strong>Site favicons</strong> — loaded from
+          <code>www.google.com/s2/favicons</code> to display website icons in
+          the UI. These requests include the site's domain (e.g.
+          <code>?domain=example.com</code>) so Google can return the correct
+          icon; no other data (your records, aliases, or notes) is ever sent.
+        </li>
+        <li>
+          <strong>Icon font</strong> — the interface loads the Material Symbols
+          icon font from Google Fonts (<code>fonts.googleapis.com</code> and
+          <code>fonts.gstatic.com</code>). These are standard font-file requests
+          and contain none of your data.
+        </li>
+      </ul>
     </section>
 
     <!-- No External Servers -->
