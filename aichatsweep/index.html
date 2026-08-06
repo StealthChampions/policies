@@ -199,12 +199,14 @@
       <p class="subtitle">Privacy Policy</p>
     </div>
 
-    <p class="update-date">Last updated: July 30, 2026</p>
+    <p class="update-date">Last updated: August 5, 2026</p>
 
     <div class="highlight-box">
       <span class="emoji">🔒</span>
-      AIChatSweep does <strong>not</strong> collect, store, or transmit any user data.
-      All operations run entirely in your browser.
+      AIChatSweep sends <strong>no data</strong> to the developer or any third
+      party — no telemetry, no analytics, no backend of its own. The only thing
+      it stores is your light/dark <strong>theme preference</strong>, kept in the
+      extension's own local storage.
     </div>
 
     <!-- Overview -->
@@ -261,6 +263,12 @@
           </tbody>
         </table>
       </div>
+      <p>
+        "Collected" means sent to us or to a third party. Nothing in this table
+        is ever transmitted off your device. Where the extension needs your
+        existing session to act on your behalf, it uses it only within the site
+        you are already on — see below.
+      </p>
     </section>
 
     <!-- How the Extension Works -->
@@ -277,18 +285,59 @@
       <div class="card">
         <h3>2. Conversation Management</h3>
         <p>
-          When you delete or archive conversations, the extension calls the
-          <strong>platform's own API</strong> directly from your browser using
-          your existing login session. We act as a shortcut — the same as if
-          you manually deleted each conversation one by one.
+          When you delete or archive conversations, the extension acts as a
+          shortcut for the clicks you would otherwise make yourself. Every
+          request it issues goes to the <strong>same site you are already on</strong>
+          (same-origin, relative URLs), reusing your existing logged-in session:
+        </p>
+        <ul>
+          <li>
+            <strong>ChatGPT</strong> — calls the site's own endpoints:
+            <code>/api/auth/session</code> to read your session token,
+            <code>DELETE</code>/<code>PATCH</code> on
+            <code>/backend-api/conversation/:id</code> to delete or archive, and
+            <code>/backend-api/conversations</code> to recover from an expired token.
+          </li>
+          <li>
+            <strong>Claude</strong> — calls the site's own endpoints:
+            <code>/api/organizations</code> to read your organization id, then
+            <code>DELETE /api/organizations/:orgId/chat_conversations/:id</code>.
+          </li>
+          <li>
+            <strong>Gemini</strong> — makes <strong>no network requests at all</strong>.
+            The extension drives Gemini's own on-page UI (open the row's ⋮ menu →
+            Delete → confirm), so every resulting request is issued by the Gemini
+            page itself, exactly as if you had clicked by hand.
+          </li>
+        </ul>
+        <p>
+          Your session token is read from the site's own endpoint and used only
+          in requests back to that same site. It is never stored, logged, or sent
+          anywhere else.
+        </p>
+      </div>
+    </section>
+
+    <!-- What IS Stored -->
+    <section>
+      <h2>What IS Stored (Locally)</h2>
+      <div class="card">
+        <h3>Theme Preference — and Nothing Else</h3>
+        <p>
+          The extension stores exactly one value: your theme choice
+          (<code>auto</code> / <code>light</code> / <code>dark</code>), written
+          under the key <code>acs-theme</code> in the extension popup's own
+          <code>localStorage</code>. It never leaves your browser.
+          <code>chrome.storage</code> is deliberately <strong>not</strong> used,
+          which is why the extension needs no <code>storage</code> permission.
         </p>
       </div>
       <div class="card">
-        <h3>3. No Data Storage</h3>
+        <h3>Nothing Else Is Persisted</h3>
         <p>
-          The extension does <strong>not</strong> store any data — no
-          preferences, no conversation data, nothing. Your selections exist
-          only in the page while it is open and are gone when you close it.
+          No conversation content, message text, account information, or other
+          personal data is ever saved. Your checkbox selections live in memory
+          only and are gone the moment the page closes.
         </p>
       </div>
     </section>
@@ -307,7 +356,21 @@
           <tbody>
             <tr>
               <td><code>host_permissions</code></td>
-              <td>To inject checkboxes on ChatGPT, Claude, and Gemini pages. These permissions allow content scripts to run on those specific sites only. No other permissions are requested.</td>
+              <td>
+                To run content scripts on the four supported domains only —
+                <code>chatgpt.com</code>, <code>chat.openai.com</code>,
+                <code>claude.ai</code>, and <code>gemini.google.com</code>.
+                This is what lets the extension inject checkboxes and act on
+                those pages.
+              </td>
+            </tr>
+            <tr>
+              <td>Chrome API permissions</td>
+              <td>
+                <strong>None.</strong> The extension requests no
+                <code>storage</code>, no <code>tabs</code>, no broad host access,
+                and no remote code.
+              </td>
             </tr>
           </tbody>
         </table>
@@ -319,12 +382,14 @@
       <h2>Third-Party Services</h2>
       <p>
         AIChatSweep does <strong>not</strong> use any third-party analytics,
-        tracking, advertising, or data processing services.
+        tracking, advertising, or data processing services. It contains no
+        remote code, no <code>eval</code>, no third-party SDK, and no
+        in-product reporting or feedback channel.
       </p>
       <p>
         The extension communicates only with the AI platforms you are already
-        logged into (ChatGPT, Claude, Gemini), using their existing APIs and
-        your existing browser session.
+        logged into (ChatGPT and Claude), using their existing APIs and your
+        existing browser session. On Gemini it issues no requests at all.
       </p>
     </section>
 
@@ -332,8 +397,10 @@
     <section>
       <h2>No External Servers</h2>
       <p>
-        AIChatSweep does not operate any backend servers. There is no server
-        to send data to. Everything runs locally in your browser.
+        AIChatSweep does not operate any backend servers, and has no update
+        server of its own. Every request URL the extension issues is
+        same-origin — <strong>no data is transmitted to any external or
+        developer-controlled server</strong>. Everything runs locally in your browser.
       </p>
     </section>
 
@@ -367,7 +434,7 @@
     </section>
 
     <div class="footer">
-      <p>AIChatSweep v1.0.1 · Free</p>
+      <p>AIChatSweep v1.0.0 · Free</p>
       <p style="margin-top: 4px;">© 2026 AIChatSweep. All rights reserved.</p>
     </div>
   </div>
